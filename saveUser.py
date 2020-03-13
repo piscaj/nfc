@@ -40,7 +40,7 @@ try:
     while True:
         
         lcd.clear()
-        message = 'Ready...'
+        message = 'Ready to read...'
         lcd.message(message)
         for i in range(lcd_columns-len(message)):
             time.sleep(0.5)
