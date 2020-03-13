@@ -1,26 +1,54 @@
 #!/usr/bin/env python
 
-import time
+import time 
+#raspberry Pie GPIO library
 import RPi.GPIO as GPIO
+#card reader library
 from mfrc522 import SimpleMFRC522
+#database reader
 import mysql.connector
+#LCD panel library for 16x2 display
 import Adafruit_CharLCD as LCD
 
+#make connection to database
 db = mysql.connector.connect(
     host="localhost",
     user="attendanceadmin",
     passwd="scoobydoo",
     database="attendancesystem"
 )
-
+#create object to execute operations on the database
 cursor = db.cursor()
+
+#create object for the card reader
 reader = SimpleMFRC522()
-lcd = LCD.Adafruit_CharLCD(4, 24, 23, 17, 18, 22, 16, 2, 4)
+
+#setup for LCD panel
+lcd_rs        = 4  
+lcd_en        = 24
+lcd_d4        = 23
+lcd_d5        = 17
+lcd_d6        = 18
+lcd_d7        = 22
+lcd_columns   = 16  
+lcd_rows      = 2
+lcd_backlight = 4
+#initialize lcd with settings above
+lcd = LCD.Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns, lcd_rows, lcd_backlight)
 
 try:
     while True:
+        
         lcd.clear()
-        lcd.message('Place Card to\nregister')
+        message = 'Ready to read...'
+        lcd.message(message)
+        for i in range(lcd_columns-len(message)):
+            time.sleep(0.5)
+            lcd.move_right()
+        for i in range(lcd_columns-len(message)):
+            time.sleep(0.5)
+            lcd.move_left()
+            
         id, text = reader.read()
         cursor.execute("SELECT id FROM users WHERE rfid_uid="+str(id))
         cursor.fetchone()
