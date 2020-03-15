@@ -40,14 +40,17 @@ try:
     while True:
         
         lcd.clear()
-        message = 'Ready...'
+        message = '.......'
         lcd.message(message)
         for i in range(lcd_columns-len(message)):
-            time.sleep(0.5)
+            time.sleep(0.3)
             lcd.move_right()
         for i in range(lcd_columns-len(message)):
-            time.sleep(0.5)
+            time.sleep(0.3)
             lcd.move_left()
+        lcd.clear()
+        message = 'Ready...\nProvide Key'
+        lcd.message(message)
             
         id, text = reader.read()
         cursor.execute("SELECT id FROM users WHERE rfid_uid="+str(id))
