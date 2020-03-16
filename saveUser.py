@@ -49,7 +49,7 @@ try:
             time.sleep(0.1)
             lcd.move_left()
         lcd.clear()
-        message = 'Ready...\nProvide Key'
+        message = 'Ready...\nPlace new card'
         lcd.message(message)
             
         id, text = reader.read()
