@@ -16,7 +16,7 @@ db = mysql.connector.connect(
     user="attendanceadmin",
     passwd="scoobydoo",
     database="attendancesystem"
-
+)
 #create object to execute operations on the database
 cursor = db.cursor()
 
