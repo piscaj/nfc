@@ -43,10 +43,10 @@ try:
         message = '.......'
         lcd.message(message)
         for i in range(lcd_columns-len(message)):
-            time.sleep(0.3)
+            time.sleep(0.1)
             lcd.move_right()
         for i in range(lcd_columns-len(message)):
-            time.sleep(0.3)
+            time.sleep(0.1)
             lcd.move_left()
         lcd.clear()
         message = 'Ready...\nProvide Key'
