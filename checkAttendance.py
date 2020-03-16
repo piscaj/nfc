@@ -13,9 +13,9 @@ import Adafruit_CharLCD as LCD
 #make connection to database
 db = mysql.connector.connect(
     host="localhost",
-    user="attendanceadmin",
+    user="piscaj",
     passwd="scoobydoo",
-    database="attendancesystem"
+    database="nfcUsers"
 )
 #create object to execute operations on the database
 cursor = db.cursor()
