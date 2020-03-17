@@ -23,7 +23,7 @@ cursor = db.cursor()
 #create object for the card reader
 reader = SimpleMFRC522()
 
-#setup for LCD panel
+#setup pi header pins for the 16x2 LCD display
 lcd_rs        = 4  
 lcd_en        = 24
 lcd_d4        = 23
