@@ -36,9 +36,25 @@ def powerOff():
     
 def powerStatus():
     request("system",{"id": 1,"method": "getPowerStatus","params": [],"version": "1.0"})
+    
+def audioVolumeUp():
+    request("audio",{"id": 1,"method": "setAudioVolume","params": [{"volume": "+1","ui": "on","target": "speaker"}],"version": "1.0"})    
+
+def audioVolumeDown():
+    request("audio",{"id": 1,"method": "setAudioVolume","params": [{"volume": "-1","ui": "on","target": "speaker"}],"version": "1.0"})    
+
+def audioVolumeMute():
+    request("audio",{"id": 1,"method": "setAudioMute","params": [{"status": True}],"version": "1.0"})    
+
+def audioVolumeUnmute():
+    request("audio",{"id": 1,"method": "setAudioMute","params": [{"status": False}],"version": "1.0"})    
+
+def inputHDMI(num):
+    request("avContent",{"id": 1,"method": "setPlayContent","params": [{"uri": "extInput:hdmi?port="+num}],"version": "1.0"})    
 
 
-powerStatus()
+inputHDMI("1")
+
 
 
  
