@@ -7,6 +7,7 @@ import time
 IP = "192.168.2.92"
 PSK = "13579"
 
+#Build api request
 def request(service,api):
     url = "http://"+IP+"/sony/"+service
     headers = {"content-type": "application/json","X-Auth-PSK": PSK}
@@ -30,7 +31,14 @@ def request(service,api):
 def powerOn():
     request("system",{"id": 1,"method": "setPowerStatus","params": [{"status": True}],"version": "1.0"})
 
-powerOn()
+def powerOff():
+    request("system",{"id": 1,"method": "setPowerStatus","params": [{"status": False}],"version": "1.0"})
+    
+def powerStatus():
+    request("system",{"id": 1,"method": "getPowerStatus","params": [],"version": "1.0"})
+
+
+powerStatus()
 
 
  
