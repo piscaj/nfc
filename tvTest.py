@@ -25,6 +25,7 @@ def request(service,api):
         print ("Request Error:",err)
     
     data = r.json()
+
     print(data)
 
 # API commands
@@ -52,8 +53,11 @@ def audioVolumeUnmute():
 def inputHDMI(num):
     request("avContent",{"id": 1,"method": "setPlayContent","params": [{"uri": "extInput:hdmi?port="+num}],"version": "1.0"})    
 
+def getAppList():
+    request("appControl",{"id": 1,"method": "getApplicationList","params": [],"version": "1.0"})    
 
-inputHDMI("1")
+
+getAppList()
 
 
 
