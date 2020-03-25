@@ -31,12 +31,8 @@ def request(service,api):
     
     for result in data["result"]:
         for Item in result:
-            print(Item.get("icon"))
+            print("Link to icon: ",Item.get("icon"))
             
-            
-            
-        
-        
 
 # API commands
 def powerOn():
