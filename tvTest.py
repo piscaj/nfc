@@ -25,15 +25,16 @@ def request(service,api):
         print ("Request Error:",err)
     else:
         print('Successful Request!')
-    
     data = r.json()
     print("Printing JSON response")
     
     for result in data["result"]:
-        for Item in result:
-            print("Link to icon: ",Item.get("icon"))
+            print("TV adaptor address: ",result.get("macAddr","00:00:00:00:00:00"))
+    
+   # for result in data["result"]:
+   #     for Item in result:
+   #         print("Link for icon: ",Item.get("icon"))
             
-
 # API commands
 def powerOn():
     request("system",{"id": 1,"method": "setPowerStatus","params": [{"status": True}],"version": "1.0"})
@@ -62,8 +63,10 @@ def inputHDMI(num):
 def getAppList():
     request("appControl",{"id": 1,"method": "getApplicationList","params": [],"version": "1.0"})    
 
+def getSysInfo():
+    request("system",{"id": 1,"method": "getSystemInformation","params": [],"version": "1.0"})
 
-getAppList()
+getSysInfo()
 
 
 
