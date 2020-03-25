@@ -23,10 +23,20 @@ def request(service,api):
         print ("Timeout Error:",errt)
     except requests.exceptions.RequestException as err:
         print ("Request Error:",err)
+    else:
+        print('Successful Request!')
     
     data = r.json()
-
-    print(data)
+    print("Printing JSON response")
+    
+    for result in data["result"]:
+        for Item in result:
+            print(Item.get("icon"))
+            
+            
+            
+        
+        
 
 # API commands
 def powerOn():
@@ -58,6 +68,7 @@ def getAppList():
 
 
 getAppList()
+
 
 
 
