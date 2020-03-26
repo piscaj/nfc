@@ -4,17 +4,18 @@ import time
 import wol
 
 #Set TV ip adress and PSK here
-IP = "192.168.2.92"
+IP  = "192.168.2.92"
 PSK = "13579"
+MAC = "B0:68:E6:7D:0B:F3"
 
 def wakeOnLan():
-    wol.wake_on_lan(IP,"B0:68:E6:7D:0B:F3")
+    wol.wake_on_lan(IP,MAC)
     time.sleep(1)
-    wol.wake_on_lan(IP,"B0:68:E6:7D:0B:F3")
+    wol.wake_on_lan(IP,MAC)
     time.sleep(1)
-    wol.wake_on_lan(IP,"B0:68:E6:7D:0B:F3")
+    wol.wake_on_lan(IP,MAC)
     time.sleep(1)
-    wol.wake_on_lan(IP,"B0:68:E6:7D:0B:F3")
+    wol.wake_on_lan(IP,MAC)
 
 #Build api request
 def makeRequest(service,api):
