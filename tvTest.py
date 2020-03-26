@@ -2,7 +2,7 @@
 import requests
 import json
 import time
-import sys, struct, socket
+import wol
 
 #Set TV ip adress and PSK here
 IP = "192.168.2.92"
@@ -68,8 +68,7 @@ def getSysInfo():
     request("system",{"id": 1,"method": "getSystemInformation","params": [],"version": "1.0"})
 
 
-getSysInfo()
-
+wol.wake_on_lan(IP,"B0:68:E6:7D:0B:F3")
 
 
 
