@@ -16,4 +16,4 @@ def wake_on_lan(ip,mac_address):
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sock.sendto(send_data, host)
     
-    print('Sending magic packet to done!')
+    print('Sending magic packet done!')
