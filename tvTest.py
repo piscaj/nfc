@@ -2,6 +2,7 @@
 import requests
 import json
 import time
+import sys, struct, socket
 
 #Set TV ip adress and PSK here
 IP = "192.168.2.92"
@@ -65,6 +66,7 @@ def getAppList():
 
 def getSysInfo():
     request("system",{"id": 1,"method": "getSystemInformation","params": [],"version": "1.0"})
+
 
 getSysInfo()
 
