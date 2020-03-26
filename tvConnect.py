@@ -35,14 +35,14 @@ def makeRequest(service,api):
     else:
         print('Successful Request!')
     data = r.json()
-    print("Printing JSON response")
+    #print("Printing JSON response")
     
-    for result in data["result"]:
-            print("TV adaptor address: ",result.get("macAddr","00:00:00:00:00:00"))
+    #for result in data["result"]:
+    #        print("TV adaptor address: ",result.get("macAddr","00:00:00:00:00:00"))
     
-   # for result in data["result"]:
-   #     for Item in result:
-   #         print("Link for icon: ",Item.get("icon"))
+    #for result in data["result"]:
+    #    for Item in result:
+    #        print("Link for icon: ",Item.get("icon"))
    
             
 
