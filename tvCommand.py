@@ -3,6 +3,8 @@ import tvConnect
 
 # API commands
 def powerOn():
+    tvConnect.wakeOnLan()
+    time.sleep(3)
     tvConnect.makeRequest("system",{"id": 1,"method": "setPowerStatus","params": [{"status": True}],"version": "1.0"})
 
 def powerOff():
@@ -32,5 +34,5 @@ def getAppList():
 def getSysInfo():
     tvConnect.makeRequest("system",{"id": 1,"method": "getSystemInformation","params": [],"version": "1.0"})
 
-
+powerOn()
  

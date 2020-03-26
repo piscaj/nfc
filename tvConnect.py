@@ -7,6 +7,15 @@ import wol
 IP = "192.168.2.92"
 PSK = "13579"
 
+def wakeOnLan():
+    wol.wake_on_lan(IP,"B0:68:E6:7D:0B:F3")
+    time.sleep(1)
+    wol.wake_on_lan(IP,"B0:68:E6:7D:0B:F3")
+    time.sleep(1)
+    wol.wake_on_lan(IP,"B0:68:E6:7D:0B:F3")
+    time.sleep(1)
+    wol.wake_on_lan(IP,"B0:68:E6:7D:0B:F3")
+
 #Build api request
 def makeRequest(service,api):
     url = "http://"+IP+"/sony/"+service
@@ -35,7 +44,6 @@ def makeRequest(service,api):
    #     for Item in result:
    #         print("Link for icon: ",Item.get("icon"))
    
-   #wol.wake_on_lan(IP,"B0:68:E6:7D:0B:F3")
             
 
 
