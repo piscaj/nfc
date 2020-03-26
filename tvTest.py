@@ -67,7 +67,6 @@ def getAppList():
 def getSysInfo():
     request("system",{"id": 1,"method": "getSystemInformation","params": [],"version": "1.0"})
 
-
 wol.wake_on_lan(IP,"B0:68:E6:7D:0B:F3")
 
 
