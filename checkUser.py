@@ -52,7 +52,7 @@ try:
       lcd.message("Welcome " + result[1])
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
       db.commit()
-      tvCommand.powerOn();
+      tvCommand.powerOn()
     else:
       lcd.message("User does not exist.")
     time.sleep(2)

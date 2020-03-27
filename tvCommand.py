@@ -33,6 +33,4 @@ def getAppList():
 
 def getSysInfo():
     tvConnect.makeRequest("system",{"id": 1,"method": "getSystemInformation","params": [],"version": "1.0"})
-
-powerOn()
  

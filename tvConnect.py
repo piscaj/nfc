@@ -40,8 +40,7 @@ def makeRequest(service,api):
         print ("Request Error:",err)
     else:
         print('Successful Request!')
-    data = r.json()
-    #print("Printing JSON response")
+    data = r.json()    
     
     #for result in data["result"]:
     #        print("TV adaptor address: ",result.get("macAddr","00:00:00:00:00:00"))
