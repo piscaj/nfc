@@ -3,10 +3,17 @@ import json
 import time
 import wol
 
-#Set TV ip adress and PSK here
-IP  = "192.168.2.92"
-PSK = "13579"
-MAC = "B0:68:E6:7D:0B:F3"
+#Read tvConfig and setup variables
+
+with open("tvSettings.json") as json_data_file:
+    data = json.load(json_data_file)
+print(data)
+
+for settings in data["tvSettings"]:
+    IP = settings.get("ip")
+    PSK = settings.get("psk")
+    MAC = settings.get("mac")
+
 
 def wakeOnLan():
     wol.wake_on_lan(IP,MAC)

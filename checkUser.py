@@ -9,6 +9,7 @@ from mfrc522 import SimpleMFRC522
 import mysql.connector
 #LCD panel library for 16x2 display
 import Adafruit_CharLCD as LCD
+import tvCommand
 
 #make connection to database
 db = mysql.connector.connect(
@@ -39,7 +40,7 @@ lcd = LCD.Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_c
 try:
   while True:
     lcd.clear()
-    lcd.message('Place Card to\nrecord attendance')
+    lcd.message('Place Card to\nturn TV On')
     id, text = reader.read()
 
     cursor.execute("Select id, name FROM users WHERE rfid_uid="+str(id))
@@ -51,6 +52,7 @@ try:
       lcd.message("Welcome " + result[1])
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
       db.commit()
+      tvCommand.powerOn();
     else:
       lcd.message("User does not exist.")
     time.sleep(2)
