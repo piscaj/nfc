@@ -1,9 +1,9 @@
 {
-    "tvSettings":{
+    "tvSettings":[{
         "ip":"192.168.2.92",
         "psk":"13579",
         "mac":"B0:68:E6:7D:0B:F3"
-    },
+    }],
     "otherSettings":{
         "other1":[
            
