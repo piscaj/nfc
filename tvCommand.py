@@ -4,7 +4,7 @@ import tvConnect
 # API commands
 def powerOn():
     tvConnect.wakeOnLan()
-    time.sleep(3)
+    time.sleep(2)
     tvConnect.makeRequest("system",{"id": 1,"method": "setPowerStatus","params": [{"status": True}],"version": "1.0"})
 
 def powerOff():

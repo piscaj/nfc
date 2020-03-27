@@ -19,8 +19,6 @@ def wakeOnLan():
     wol.wake_on_lan(IP,MAC)
     time.sleep(1)
     wol.wake_on_lan(IP,MAC)
-    time.sleep(1)
-    wol.wake_on_lan(IP,MAC)
 
 #Build api request
 def makeRequest(service,api):
