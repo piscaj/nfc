@@ -2,6 +2,11 @@ import time
 import tvConnect
 
 # API commands
+
+def powerStatus():
+    status = tvConnect.makeRequest("system",{"id": 1,"method": "getPowerStatus","params": [],"version": "1.0"})
+    return status
+
 def powerOn():
     tvConnect.wakeOnLan()
     time.sleep(2)
@@ -9,10 +14,21 @@ def powerOn():
 
 def powerOff():
     tvConnect.makeRequest("system",{"id": 1,"method": "setPowerStatus","params": [{"status": False}],"version": "1.0"})
+
+def powerToggle():
+    status = powerStatus()
     
-def powerStatus():
-    tvConnect.makeRequest("system",{"id": 1,"method": "getPowerStatus","params": [],"version": "1.0"})
+    for stat in status["result"]:
+        power = stat.get("status")
+        print(power)
     
+    if power == "active":
+        tvConnect.makeRequest("system",{"id": 1,"method": "setPowerStatus","params": [{"status": False}],"version": "1.0"})
+    else:
+        tvConnect.makeRequest("system",{"id": 1,"method": "setPowerStatus","params": [{"status": True}],"version": "1.0"})
+        tvConnect.wakeOnLan()
+        time.sleep(1)
+
 def audioVolumeUp():
     tvConnect.makeRequest("audio",{"id": 1,"method": "setAudioVolume","params": [{"volume": "+1","ui": "on","target": "speaker"}],"version": "1.0"})    
 
@@ -33,4 +49,5 @@ def getAppList():
 
 def getSysInfo():
     tvConnect.makeRequest("system",{"id": 1,"method": "getSystemInformation","params": [],"version": "1.0"})
- 
+
+powerToggle()
