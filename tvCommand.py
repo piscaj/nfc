@@ -20,7 +20,7 @@ def powerToggle():
     
     for stat in status["result"]:
         power = stat.get("status")
-        print(power)
+        print("TV Power Status: ",power)
     
     if power == "active":
         tvConnect.makeRequest("system",{"id": 1,"method": "setPowerStatus","params": [{"status": False}],"version": "1.0"})

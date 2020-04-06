@@ -4,13 +4,12 @@ import time
 import wol
 import os
 
-#Load setup for tv connection
-#set location of the settings file to the local directory of the script and then open
+#Load settings
+#set location of the file to the local directory then open
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-with open(os.path.join(__location__,"tvSettings.json")) as settings:
+with open(os.path.join(__location__,"settings.json")) as settings:
     data = json.load(settings)
-    
-    
+        
 for settings in data["tvSettings"]:
     IP  = settings.get("ip")
     PSK = settings.get("psk")
