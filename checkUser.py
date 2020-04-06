@@ -1,21 +1,16 @@
 #!/usr/bin/env python
 
-import time 
-#raspberry Pie GPIO library
-import RPi.GPIO as GPIO
-#card reader library
-from mfrc522 import SimpleMFRC522
-#database reader
-import mysql.connector
-from mysql.connector import errorcode
-#LCD panel library for 16x2 display
-import Adafruit_CharLCD as LCD
-import tvCommand
+import time
 import json
 import os
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
+import mysql.connector
+from mysql.connector import errorcode
+import Adafruit_CharLCD as LCD
+import tvCommand
 
 #Load settings
-#set location of the file to the local directory then open
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 with open(os.path.join(__location__,"settings.json")) as settings:
     data = json.load(settings)
@@ -73,7 +68,7 @@ def checkThisUser(id):
       db.commit()
       tvCommand.powerToggle() 
   else:
-      lcd.message("User does not exist.")
+      lcd.message("Not authorized.")
     
       cursor.close()
       db.close()
