@@ -82,7 +82,6 @@ def checkThisUser(id):
   lcd.clear()
   lcd.message('Place Card to\npower on/off')
     
-
 try:
   while True:
    
