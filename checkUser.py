@@ -71,7 +71,7 @@ def checkThisUser(id):
       lcd.message("Welcome\n" + result[1])
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
       db.commit()
-      tvCommand.powerToggle()
+      tvCommand.powerToggle() 
   else:
       lcd.message("User does not exist.")
     
