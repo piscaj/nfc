@@ -10,7 +10,7 @@ from mysql.connector import errorcode
 import Adafruit_CharLCD as LCD
 import tvCommand
 
-#Load settings
+#Load config
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 with open(os.path.join(__location__,"settings.json")) as settings:
     data = json.load(settings)
@@ -73,7 +73,7 @@ def checkThisUser(id):
       cursor.close()
       db.close()
   
-  time.sleep(2)
+  time.sleep(1)
   lcd.clear()
   lcd.message('Place Card to\npower on/off')
     
