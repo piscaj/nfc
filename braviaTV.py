@@ -32,6 +32,9 @@ class braviaTV:
         data = r.json()    
         return data
     
+    def wol(self):
+        wol.wake_on_lan(self.ip,self.mac) 
+        
     def powerStatus(self):
         status = self.__makeRequest("system",{"id": 1,"method": "getPowerStatus","params": [],"version": "1.0"})
         return status

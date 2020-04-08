@@ -7,7 +7,7 @@ import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 import mysql.connector
 from mysql.connector import errorcode
-import tvCommand
+from braviaTV import braviaTV
 from lcd import lcdDisplay
 
 #Load config
@@ -16,22 +16,29 @@ with open(os.path.join(__location__,"settings.json")) as settings:
     data = json.load(settings)
 
 for settings in data["mySQLSettings"]:
-    HOST  = settings.get("host")
-    USER = settings.get("user")
-    PASS = settings.get("passwd")
-    DB = settings.get("database")
+    host  = settings.get("host")
+    user = settings.get("user")
+    password = settings.get("passwd")
+    db = settings.get("database")
+
+for settings in data["tvSettings"]:
+    ip  = settings.get("ip")
+    psk = settings.get("psk")
+    mac = settings.get("mac")
 
 mySQLcfg = {
-    'host':HOST,
-    'user':USER,
-    'passwd':PASS,
-    'database':DB
+    'host':host,
+    'user':user,
+    'passwd':password,
+    'database':db
 }
 
-#create object for the card reader
+#create instance of the card reader
 reader = SimpleMFRC522()
-
+#create instance of the LCD
 lcdDisplay = lcdDisplay()
+#create instance of the Sony Bravia TV
+tv = braviaTV(ip,psk,mac)
 
 lcdDisplay.message('Place card to\npower on/off')
 
@@ -57,7 +64,7 @@ def checkThisUser(id):
       lcdDisplay.message("Welcome\n" + result[1])
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
       db.commit()
-      tvCommand.powerToggle() 
+      tv.powerToggle() 
   else:
       lcdDisplay.message("Not authorized.")
     
