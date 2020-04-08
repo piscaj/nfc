@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import time
 import json
@@ -7,8 +7,8 @@ import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 import mysql.connector
 from mysql.connector import errorcode
-import Adafruit_CharLCD as LCD
 import tvCommand
+from lcd import lcdDisplay
 
 #Load config
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -31,19 +31,9 @@ mySQLcfg = {
 #create object for the card reader
 reader = SimpleMFRC522()
 
-#setup pi header pins for the 16x2 LCD display
-lcd_rs        = 4  
-lcd_en        = 24
-lcd_d4        = 23
-lcd_d5        = 17
-lcd_d6        = 18
-lcd_d7        = 22
-lcd_columns   = 16  
-lcd_rows      = 2
-lcd_backlight = 4
-#initialize lcd with settings above
-lcd = LCD.Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns, lcd_rows, lcd_backlight)
-lcd.message('Place card to\npower on/off')
+lcdDisplay = lcdDisplay()
+
+lcdDisplay.message('Place card to\npower on/off')
 
 def checkThisUser(id):
   try:
@@ -63,20 +53,20 @@ def checkThisUser(id):
       result = cursor.fetchone()
   
   if cursor.rowcount >= 1:
-      lcd.clear()
-      lcd.message("Welcome\n" + result[1])
+      lcdDisplay.clear()
+      lcdDisplay.message("Welcome\n" + result[1])
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
       db.commit()
       tvCommand.powerToggle() 
   else:
-      lcd.message("Not authorized.")
+      lcdDisplay.message("Not authorized.")
     
       cursor.close()
       db.close()
   
   time.sleep(1)
-  lcd.clear()
-  lcd.message('Place Card to\npower on/off')
+  lcdDisplay.clear()
+  lcdDisplay.message('Place Card to\npower on/off')
     
 try:
   while True:

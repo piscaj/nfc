@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import requests
 import json
 import time
@@ -40,12 +41,6 @@ def makeRequest(service,api):
     data = r.json()  
     #print(data)  
     return data
-    
-    #for result in data["result"]:
-    #        print("TV adaptor address: ",result.get("macAddr","00:00:00:00:00:00"))
-    
-    #for result in data["result"]:
-    #    for Item in result:
-    #        print("Link for icon: ",Item.get("icon"))
+
    
             
