@@ -47,20 +47,20 @@ class braviaTV:
     
     def powerToggle(self):
         status = self.powerStatus()
-        for stat in status["result"]:
-            power = stat.get("status")
+        for state in status["result"]:
+            power = state.get("status")
         if power == "active":
             self.__makeRequest("system",{"id": 1,"method": "setPowerStatus","params": [{"status": False}],"version": "1.0"})
             status = self.powerStatus()
-            for stat in status["result"]:
-                now = stat.get("status")
-                print("TV Power Status: ",now)
+            for state in status["result"]:
+                theState = state.get("status")
+                return theState
         else:
             self.__makeRequest("system",{"id": 1,"method": "setPowerStatus","params": [{"status": True}],"version": "1.0"})
             status = self.powerStatus()
-            for stat in status["result"]:
-                now = stat.get("status")
-                print("TV Power Status: ",now)
+            for state in status["result"]:
+                theState = state.get("status")
+                return theState
     
             self.launchNetflix()
     
