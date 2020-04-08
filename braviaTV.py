@@ -41,9 +41,17 @@ class braviaTV:
     
     def powerOn(self):
         self.__makeRequest("system",{"id": 1,"method": "setPowerStatus","params": [{"status": True}],"version": "1.0"})
-     
+        status = self.powerStatus()
+        for state in status["result"]:
+            theState = state.get("status")
+            return theState
+        
     def powerOff(self):
         self.__makeRequest("system",{"id": 1,"method": "setPowerStatus","params": [{"status": False}],"version": "1.0"})
+        status = self.powerStatus()
+        for state in status["result"]:
+            theState = state.get("status")
+            return theState
     
     def powerToggle(self):
         status = self.powerStatus()
