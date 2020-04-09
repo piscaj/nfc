@@ -35,6 +35,20 @@ class braviaTV:
     def wol(self):
         wol.wake_on_lan(self.ip,self.mac) 
         
+    def getSysInfo(self):
+        info = self.__makeRequest("system",{"id": 1,"method": "getSystemInformation","params": [],"version": "1.0"})
+        return info
+    
+    def launchNetflix(self):
+        apps = self.getAppList()
+        for result in apps["result"]:
+            for Item in result:
+                if Item.get("title") == "Netflix":
+                
+                    Netflix = Item.get("uri")
+                    self.__makeRequest("appControl",{"id": 1,"method": "setActiveApp","params":[{"uri": Netflix }],"version": "1.0"})
+                    break
+        
     def powerStatus(self):
         status = self.__makeRequest("system",{"id": 1,"method": "getPowerStatus","params": [],"version": "1.0"})
         return status
@@ -68,9 +82,9 @@ class braviaTV:
             status = self.powerStatus()
             for state in status["result"]:
                 theState = state.get("status")
-                return theState
-    
+            time.sleep(1)
             self.launchNetflix()
+            return theState
     
     def audioVolumeUp(self):
         self.__makeRequest("audio",{"id": 1,"method": "setAudioVolume","params": [{"volume": "+1","ui": "on","target": "speaker"}],"version": "1.0"})    
@@ -91,19 +105,8 @@ class braviaTV:
         apps = self.__makeRequest("appControl",{"id": 1,"method": "getApplicationList","params": [],"version": "1.0"})    
         return apps
     
-    def getSysInfo(self):
-        info = self.__makeRequest("system",{"id": 1,"method": "getSystemInformation","params": [],"version": "1.0"})
-        return info
     
-    def launchNetflix(self):
-        apps = self.getAppList()
-        for result in apps["result"]:
-            for Item in result:
-                if Item.get("title") == "Netflix":
-                
-                    Netflix = Item.get("uri")
-                    self.__makeRequest("appControl",{"id": 1,"method": "setActiveApp","params":[{"uri": Netflix }],"version": "1.0"})
-                    break
 
         
-    
+tv = braviaTV("192.168.2.92","13579","B0:68:E6:7D:0B:F3")
+tv.powerToggle()
