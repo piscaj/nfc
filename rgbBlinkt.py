@@ -19,6 +19,7 @@ power = 0
 
 def blink(num):
     power = num
+    print("function called ",num)
 
 def make_gaussian(fwhm):
     x = np.arange(0, blinkt.NUM_PIXELS, 1, float)
