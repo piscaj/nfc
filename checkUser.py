@@ -9,6 +9,7 @@ import mysql.connector
 from mysql.connector import errorcode
 from braviaTV import braviaTV
 from lcd import lcdDisplay
+import rgbBlinkt
 
 
 #Load config
@@ -61,6 +62,7 @@ def checkThisUser(id):
       result = cursor.fetchone()
   
   if cursor.rowcount >= 1:
+      rgbBlinkt.blink(1)
       lcdDisplay.clear()
       lcdDisplay.message("Welcome\n" + result[1])
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
@@ -68,6 +70,7 @@ def checkThisUser(id):
       tvPower = tv.powerToggle()
       lcdDisplay.clear()
       lcdDisplay.message("TV power state\n" + tvPower)
+      rgbBlinkt.blink(0)
        
   else:
       lcdDisplay.message("Not authorized.")
