@@ -5,10 +5,10 @@ import time
 class lcdDisplay:
     
     lcd_rs        = 4  
-    lcd_en        = 24
-    lcd_d4        = 23
+    lcd_en        = 6  #Altered to add BLINKT 24 to 6
+    lcd_d4        = 5  #Altered to add BLINKT 23 to 5
     lcd_d5        = 17
-    lcd_d6        = 18
+    lcd_d6        = 18 
     lcd_d7        = 22
     lcd_columns   = 16  
     lcd_rows      = 2

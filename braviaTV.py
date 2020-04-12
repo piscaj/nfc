@@ -106,7 +106,3 @@ class braviaTV:
         return apps
     
     
-
-        
-tv = braviaTV("192.168.2.92","13579","B0:68:E6:7D:0B:F3")
-tv.powerToggle()
