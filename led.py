@@ -14,8 +14,8 @@ class LedControl:
     def stop(self):
         self._running = False 
         
-    def setColor(self,color = [], *args):
-        blinkt.set_pixel(color)
+    def setColor(self,pix,r,g,b):
+        blinkt.set_pixel(pix,r,g,b)
         blinkt.show()
     
     def setAllColor(self,color = [], *args):
@@ -24,10 +24,23 @@ class LedControl:
             
     def runway(self):
         self._running = True
+        blinkt.set_pixel(4,255,255,0)
+        blinkt.show()
+        blinkt.set_pixel(4,0,0,0)
+        blinkt.show()
+        blinkt.set_pixel(3,255,255,0)
+        blinkt.show()
+        blinkt.set_pixel(3,0,0,0)
+        blinkt.show()
+        blinkt.set_pixel(2,255,255,0)
+        blinkt.show()
+        blinkt.set_pixel(2,0,0,0)
+        blinkt.show()
+        time.sleep(0.04)
         while self._running:
             for i in range(8):
                 blinkt.clear()
-                blinkt.set_pixel(i, 255, 0, 0)
+                blinkt.set_pixel(i, 119, 255, 0)
                 blinkt.show()
                 blinkt.time.sleep(0.05)
         print("Runway LED thread ended...")

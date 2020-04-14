@@ -64,6 +64,7 @@ def checkThisUser(id):
       result = cursor.fetchone()
   
   if cursor.rowcount >= 1:
+      #p1 = Thread(target = light.setColor, args = (3,45,45,45,))
       p1 = Thread(target = light.runway)
       p1.start()
       lcdDisplay.clear()
