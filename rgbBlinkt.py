@@ -29,7 +29,6 @@ def make_gaussian(fwhm):
     gauss = np.exp(-4 * np.log(2) * ((x - x0) ** 2 + (y - y0) ** 2) / fwhm ** 2)
     return gauss
 
-
 while power > 0:
     for z in list(range(1, 10)[::-1]) + list(range(1, 10)):
         fwhm = 5.0 / z

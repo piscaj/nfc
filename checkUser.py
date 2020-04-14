@@ -9,8 +9,8 @@ import mysql.connector
 from mysql.connector import errorcode
 from braviaTV import braviaTV
 from lcd import lcdDisplay
-from blink import blink
-
+from multiprocessing import Process
+import blink
 
 #Load config
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -35,9 +35,6 @@ mySQLcfg = {
     'database':db
 }
 
-led = blink()
-led.clear()
-
 #create instance of the card reader
 reader = SimpleMFRC522()
 #create instance of the LCD
@@ -47,7 +44,7 @@ tv = braviaTV(ip,psk,mac)
 
 lcdDisplay.message('Place card to\npower on/off')
 
-def checkThisUser(id):
+def checkThisUser(id): 
   try:
     db = mysql.connector.connect(**mySQLcfg)
     
@@ -66,33 +63,43 @@ def checkThisUser(id):
   
   if cursor.rowcount >= 1:
       lcdDisplay.clear()
+      p2 = Process(target = blink.blinkIt)
+      p2.start()
       lcdDisplay.message("Welcome\n" + result[1])
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
       db.commit()
       tvPower = tv.powerToggle()
+      p3 = Process(target = blink.blinkIt)
+      p3.start()
       lcdDisplay.clear()
       lcdDisplay.message("TV power state\n" + tvPower)
-       
   else:
       lcdDisplay.message("Not authorized.")
-    
       cursor.close()
       db.close()
   
   time.sleep(1)
+  p4 = Process(target = blink.blinkIt)
+  p4.start()
+  p2.join()
+  p3.join()
+  p4.join()
   lcdDisplay.clear()
-  led.power = 0
   lcdDisplay.message('Place Card to\npower on/off')
-    
-try:
-  while True:
-   
-    id, text = reader.read()
-    if id > 0:
-      checkThisUser(id)
-      print(id)
-      
-finally:
-  led.clear()
-  GPIO.cleanup()
 
+
+def readerStart():
+  try:
+    while True:
+   
+      id, text = reader.read()
+      if id > 0:
+        checkThisUser(id)
+        print(id)
+      
+  finally:
+    GPIO.cleanup()
+
+if __name__ == '__main__':
+    p1 = Process(target = readerStart)
+    p1.start()
