@@ -44,6 +44,9 @@ tv = braviaTV(ip,psk,mac)
 #create instance of the LED
 light = LedControl()
 
+weather = Thread(target = light.showWeather)
+weather.start()
+
 lcdDisplay.message('Place card to\npower on/off')
 
 def checkThisUser(id): 
@@ -65,8 +68,8 @@ def checkThisUser(id):
   
   if cursor.rowcount >= 1:
       #p1 = Thread(target = light.setColor, args = (3,45,45,45,))
-      p1 = Thread(target = light.runway)
-      p1.start()
+      runway = Thread(target = light.runway)
+      runway.start()
       lcdDisplay.clear()
       lcdDisplay.message("Welcome\n" + result[1])
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
@@ -78,12 +81,12 @@ def checkThisUser(id):
       lcdDisplay.message("Not authorized.")
       cursor.close()
       db.close()
-  
+      
   time.sleep(0.5)
-  p2 = Thread(target = light.stop)
-  p2.start()
-  p1.join()
-  p2.join()  
+  stopRunway = Thread(target = light.stop)
+  stopRunway.start()
+  runway.join()
+  stopRunway.join()  
   lcdDisplay.clear()
   lcdDisplay.message('Place Card to\npower on/off')
 

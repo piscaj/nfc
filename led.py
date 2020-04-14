@@ -3,6 +3,7 @@ import time
 from sys import exit
 import numpy as np
 import blinkt
+import requests
 
     #blinkt.set_clear_on_exit()
 
@@ -10,7 +11,9 @@ class LedControl:
     
     def __init__(self):  
         self._running  = True 
+        self._temp = 0
         
+    #This is used to kill processes
     def stop(self):
         self._running = False 
         
@@ -18,8 +21,8 @@ class LedControl:
         blinkt.set_pixel(pix,r,g,b)
         blinkt.show()
     
-    def setAllColor(self,color = [], *args):
-        blinkt.set_all(color)
+    def setAllColor(self,pix,r,g,b):
+        blinkt.set_all(pix,r,g,b)
         blinkt.show()
             
     def runway(self):
@@ -56,7 +59,7 @@ class LedControl:
         return gauss
 
     def flash(self):
-        #self._running = True
+        self._running = True
         while self._running:
             
             for z in list(range(1, 10)[::-1]) + list(range(1, 10)):
@@ -80,4 +83,51 @@ class LedControl:
                 if t < 0.04:
                     time.sleep(0.04 - t)
         print("Flash LED thread ended...")
+
+    API_KEY = '7cb3cebc17d4311f4be0b58c3af8e06d'
+    CITY_ID = '4929055'
+
+    url = 'http://api.openweathermap.org/data/2.5/weather'
+
+    def update_weather(self):
+        payload = {
+            'id': self.CITY_ID,
+            'units': 'metric',
+            'appid': self.API_KEY
+     }
+        try:
+            r = requests.get(url=self.url, params=payload)
+            self._temp = r.json().get('main').get('temp')
+            print('Temperture = ' + str(self._temp) + ' C')
+
+        except requests.exceptions.ConnectionError:
+            print('Connection Error')
+
+    def show_graph(self,v, r, g, b):
+        v *= blinkt.NUM_PIXELS
+        for x in range(blinkt.NUM_PIXELS):
+            if v < 0:
+                r, g, b = 0, 0, 0
+            else:
+                r, g, b = [int(min(v, 1.0) * c) for c in [r, g, b]]
+            blinkt.set_pixel(x, r, g, b)
+            v -= 1
+        blinkt.show()
+
+    def draw_thermo(self,temp):
+        v = temp
+        v /= 40
+        v += (1 / 8)
+        self.show_graph(v, 255, 0, 0)
+
+    def showWeather(self):
+        while self._running:
+            self.update_weather()
+            self.draw_thermo(self._temp)
+            time.sleep(120)
+        print("Weather LED thread ended...")
+        blinkt.set_all(0, 0, 0)
+        blinkt.show()
+        
+
 
