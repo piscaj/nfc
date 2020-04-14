@@ -9,8 +9,8 @@ import mysql.connector
 from mysql.connector import errorcode
 from braviaTV import braviaTV
 from lcd import lcdDisplay
-from multiprocessing import Process
-import blink
+from threading import Thread
+from led import LedControl
 
 #Load config
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -41,6 +41,8 @@ reader = SimpleMFRC522()
 lcdDisplay = lcdDisplay()
 #create instance of the Sony Bravia TV
 tv = braviaTV(ip,psk,mac)
+#create instance of the LED
+light = LedControl()
 
 lcdDisplay.message('Place card to\npower on/off')
 
@@ -62,15 +64,13 @@ def checkThisUser(id):
       result = cursor.fetchone()
   
   if cursor.rowcount >= 1:
-      p2 = Process(target = blink.blinkIt)
-      p2.start()
+      p1 = Thread(target = light.runway)
+      p1.start()
       lcdDisplay.clear()
       lcdDisplay.message("Welcome\n" + result[1])
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
       db.commit()
       tvPower = tv.powerToggle()
-      p3 = Process(target = blink.blinkIt)
-      p3.start()
       lcdDisplay.clear()
       lcdDisplay.message("TV power state\n" + tvPower)
   else:
@@ -79,11 +79,10 @@ def checkThisUser(id):
       db.close()
   
   time.sleep(0.5)
-  p4 = Process(target = blink.blinkIt)
-  p4.start()
-  p2.join()
-  p3.join()
-  p4.join()
+  p2 = Thread(target = light.stop)
+  p2.start()
+  p1.join()
+  p2.join()  
   lcdDisplay.clear()
   lcdDisplay.message('Place Card to\npower on/off')
 
@@ -101,5 +100,6 @@ def readerStart():
     GPIO.cleanup()
 
 if __name__ == '__main__':
-    p1 = Process(target = readerStart)
-    p1.start()
+    readerStart()
+    #p1 = Thread(target = readerStart)
+    #p1.start()
