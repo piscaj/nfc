@@ -12,19 +12,13 @@ class LedControl:
         self._running  = True 
         
     def stop(self):
-        self._running = False
-        #time.sleep(0.2)
-        #blinkt.set_all(0, 0, 0)
-        #blinkt.show()
-        
+        self._running = False 
         
     def setColor(self,color = [], *args):
-        blinkt.set_all(0, 0, 0)
         blinkt.set_pixel(color)
         blinkt.show()
     
     def setAllColor(self,color = [], *args):
-        blinkt.set_all(0, 0, 0)
         blinkt.set_all(color)
         blinkt.show()
             
