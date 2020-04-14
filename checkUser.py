@@ -62,9 +62,9 @@ def checkThisUser(id):
       result = cursor.fetchone()
   
   if cursor.rowcount >= 1:
-      lcdDisplay.clear()
       p2 = Process(target = blink.blinkIt)
       p2.start()
+      lcdDisplay.clear()
       lcdDisplay.message("Welcome\n" + result[1])
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
       db.commit()
@@ -78,7 +78,7 @@ def checkThisUser(id):
       cursor.close()
       db.close()
   
-  time.sleep(1)
+  time.sleep(0.5)
   p4 = Process(target = blink.blinkIt)
   p4.start()
   p2.join()
