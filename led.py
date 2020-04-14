@@ -26,6 +26,8 @@ class LedControl:
         blinkt.show()
             
     def runway(self):
+        blinkt.set_all(0, 0, 0)
+        blinkt.show()
         self._running = True
         blinkt.set_pixel(4,255,255,0)
         blinkt.show()
@@ -59,6 +61,8 @@ class LedControl:
         return gauss
 
     def flash(self):
+        blinkt.set_all(0, 0, 0)
+        blinkt.show()
         self._running = True
         while self._running:
             
@@ -121,6 +125,9 @@ class LedControl:
         self.show_graph(v, 255, 0, 0)
 
     def showWeather(self):
+        blinkt.set_all(0, 0, 0)
+        blinkt.show()
+        self._running = True
         while self._running:
             self.update_weather()
             self.draw_thermo(self._temp)

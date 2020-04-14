@@ -44,12 +44,12 @@ tv = braviaTV(ip,psk,mac)
 #create instance of the LED
 light = LedControl()
 
-weather = Thread(target = light.showWeather)
-weather.start()
-
 lcdDisplay.message('Place card to\npower on/off')
 
-def checkThisUser(id): 
+def checkThisUser(id):
+  stopWeather = Thread(target = light.stop)
+  stopWeather.start()
+  stopWeather.join()
   try:
     db = mysql.connector.connect(**mySQLcfg)
     
@@ -89,9 +89,12 @@ def checkThisUser(id):
   stopRunway.join()  
   lcdDisplay.clear()
   lcdDisplay.message('Place Card to\npower on/off')
-
+  weather = Thread(target = light.showWeather)
+  weather.start()
 
 def readerStart():
+  weather = Thread(target = light.showWeather)
+  weather.start()
   try:
     while True:
    
@@ -105,5 +108,3 @@ def readerStart():
 
 if __name__ == '__main__':
     readerStart()
-    #p1 = Thread(target = readerStart)
-    #p1.start()
