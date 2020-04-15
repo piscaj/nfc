@@ -9,6 +9,11 @@ import requests
 
 class LedControl:
     
+    #Settings for weather
+    API_KEY = '7cb3cebc17d4311f4be0b58c3af8e06d'
+    CITY_ID = '4929055'
+    url = 'http://api.openweathermap.org/data/2.5/weather'
+    
     def __init__(self):  
         self._running  = True 
         self._temp = 0
@@ -87,11 +92,9 @@ class LedControl:
                 if t < 0.04:
                     time.sleep(0.04 - t)
         print("Flash LED thread ended...")
-
-    API_KEY = '7cb3cebc17d4311f4be0b58c3af8e06d'
-    CITY_ID = '4929055'
-
-    url = 'http://api.openweathermap.org/data/2.5/weather'
+        blinkt.set_all(0, 0, 0)
+        blinkt.show()
+        
 
     def update_weather(self):
         payload = {
@@ -246,5 +249,38 @@ class LedControl:
         blinkt.set_all(0, 0, 0)
         blinkt.show()
         
-
+    def rainbow(self):
+        spacing = 360.0 / 16.0
+        hue = 0
+        blinkt.set_brightness(0.1)
+        
+        blinkt.set_all(0, 0, 0)
+        blinkt.show()
+        self._running = True
+        blinkt.set_pixel(4,255,255,0)
+        blinkt.show()
+        blinkt.set_pixel(4,0,0,0)
+        blinkt.show()
+        blinkt.set_pixel(3,255,255,0)
+        blinkt.show()
+        blinkt.set_pixel(3,0,0,0)
+        blinkt.show()
+        blinkt.set_pixel(2,255,255,0)
+        blinkt.show()
+        blinkt.set_pixel(2,0,0,0)
+        blinkt.show()
+        time.sleep(0.04)
+        
+        while self._running:
+            hue = int(time.time() * 1000) % 360
+            for x in range(8):
+                offset = x * spacing
+                h = ((hue + offset) % 360) / 360.0
+                r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(h, 1.0, 1.0)]
+                blinkt.set_pixel(x, r, g, b)
+            blinkt.show()
+            time.sleep(0.001)
+        print("Rainbow LED thread ended...")
+        blinkt.set_all(0, 0, 0)
+        blinkt.show()
 
