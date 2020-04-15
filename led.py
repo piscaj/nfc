@@ -120,9 +120,119 @@ class LedControl:
 
     def draw_thermo(self,temp):
         v = temp
+        temp = float(temp)
+        if 35.6 <= temp <= 37.7:
+            r = 255 
+            g = 0
+            b = 0
+        if 33.9 <= temp <= 35.5:
+            r = 255 
+            g = 131
+            b = 58
+        if 32.2 <= temp <= 33.80:
+            r = 255 
+            g = 164
+            b = 58
+        if 31.1 <= temp <= 32.10:
+            r = 255 
+            g = 184
+            b = 58
+        if 29.4 <= temp <= 31:
+            r = 222 
+            g = 210
+            b = 58    
+        if 27.7 <= temp <= 29.3:
+            r = 255 
+            g = 236
+            b = 58            
+        if 26.1 <= temp <= 27.6:
+            r = 255 
+            g = 249
+            b = 58            
+        if 24.4 <= temp <= 26:
+            r = 249 
+            g = 255
+            b = 58     
+        if 22.7 <= temp <= 24.3:
+            r = 236
+            g = 255
+            b = 58
+        if 21.1 <= temp <= 22.6:
+            r = 210
+            g = 255
+            b = 58    
+        if 18.8 <= temp <= 21:
+            r = 177
+            g = 255
+            b = 58    
+        if 17.2 <= temp <= 18.7:
+            r = 111
+            g = 255
+            b = 58     
+        if 15.5 <= temp <= 17.1:
+            r = 58
+            g = 255
+            b = 98
+        if 13.8 <= temp <= 15.4:
+            r = 58
+            g = 255
+            b = 190
+        if 12.2 <= temp <= 13.7:
+            r = 58
+            g = 255
+            b = 210
+        if 11.1 <= temp <= 12.1:
+            r = 58
+            g = 255
+            b = 236
+        if 9.4 <= temp <= 11:
+            r = 58
+            g = 255
+            b = 255
+        if 7.7 <= temp <= 9.3:
+            r = 58
+            g = 236
+            b = 255
+        if 4.4 <= temp <= 7.6:
+            r = 58
+            g = 210
+            b = 255
+        if 3.3 <= temp <= 4.3:
+            r = 58
+            g = 177
+            b = 255
+        if 0.5 <= temp <= 3.2:
+            r = 58
+            g = 124
+            b = 255                     
+        if -2.7 <= temp <= 0.5:
+            r = 58
+            g = 65
+            b = 255            
+        if -6.6 <= temp <= -2.6:
+            r = 104
+            g = 58
+            b = 255      
+        if -7.7 <= temp <= -6.5:
+            r = 157
+            g = 58
+            b = 255
+        if -12.2 <= temp <= -7.6:
+            r = 216
+            g = 58
+            b = 255
+        if -15 <= temp <= -12.1:
+            r = 255
+            g = 58
+            b = 249
+        if temp < -14:
+            r = 255
+            g = 58
+            b = 210
+               
         v /= 40
         v += (1 / 8)
-        self.show_graph(v, 255, 0, 0)
+        self.show_graph(v, r, g, b)
 
     def showWeather(self):
         blinkt.set_all(0, 0, 0)
