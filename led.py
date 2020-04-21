@@ -4,6 +4,7 @@ from sys import exit
 import numpy as np
 import blinkt
 import requests
+import random
 
     #blinkt.set_clear_on_exit()
 
@@ -121,22 +122,16 @@ class LedControl:
             v -= 1
         blinkt.show()
 
-    def pulse(self):
-        step = 0
+    def pulse(self,r,g,b):
         while self._running:
-            if step == 0:
-                blinkt.set_all(128, 0, 0)
-
-            if step == 1:
-                blinkt.set_all(0, 128, 0)
-
-            if step == 2:
-                blinkt.set_all(0, 0, 128)
-
-            step += 1
-            step %= 3
+            pixels = random.sample(range(blinkt.NUM_PIXELS), random.randint(1, 5))
+            for i in range(blinkt.NUM_PIXELS):
+                if i in pixels:
+                    blinkt.set_pixel(i, r, g, b)
+                else:
+                    blinkt.set_pixel(i, 0, 0, 0)
             blinkt.show()
-            time.sleep(0.5)
+            time.sleep(.5)
 
     def draw_thermo(self,temp):
         v = temp
