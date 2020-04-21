@@ -121,6 +121,23 @@ class LedControl:
             v -= 1
         blinkt.show()
 
+    def pulse(self):
+        step = 0
+        while self._running:
+            if step == 0:
+                blinkt.set_all(128, 0, 0)
+
+            if step == 1:
+                blinkt.set_all(0, 128, 0)
+
+            if step == 2:
+                blinkt.set_all(0, 0, 128)
+
+            step += 1
+            step %= 3
+            blinkt.show()
+            time.sleep(0.5)
+
     def draw_thermo(self,temp):
         v = temp
         temp = float(temp)
