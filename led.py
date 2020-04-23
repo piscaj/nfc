@@ -5,20 +5,19 @@ import numpy as np
 import blinkt
 import requests
 import random
-
-    #blinkt.set_clear_on_exit()
+import json
 
 class LedControl:
     
-    #Settings for weather
-    API_KEY = '7cb3cebc17d4311f4be0b58c3af8e06d'
-    CITY_ID = '4929055'
-    url = 'http://api.openweathermap.org/data/2.5/weather'
-    
-    def __init__(self):  
+    def __init__(self,apiKey,cityID):  
         self._running  = True 
         self._temp = 0
         self._condition = "Clear"
+        self._apiKey = apiKey
+        self._cityID = cityID
+    
+    #Weather data location
+    url = 'http://api.openweathermap.org/data/2.5/weather'
         
     #This is used to kill processes
     def stop(self):
@@ -100,9 +99,9 @@ class LedControl:
 
     def update_weather(self):
         payload = {
-            'id': self.CITY_ID,
+            'id': self._cityID,
             'units': 'metric',
-            'appid': self.API_KEY
+            'appid': self._apiKey
      }
         try:
             r = requests.get(url=self.url, params=payload)
@@ -258,7 +257,7 @@ class LedControl:
             r = 58
             g = 124
             b = 255                     
-        if 2.7 <= temp <= 0.5:
+        if -2.7 <= temp <= 0.5:
             r = 58
             g = 65
             b = 255            

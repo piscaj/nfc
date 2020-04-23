@@ -27,6 +27,10 @@ for settings in data["tvSettings"]:
     ip  = settings.get("ip")
     psk = settings.get("psk")
     mac = settings.get("mac")
+    
+for settings in data["weatherSettings"]:
+    apiKey = settings.get("apiKey")
+    cityID = settings.get("cityID")
 
 mySQLcfg = {
     'host':host,
@@ -42,7 +46,7 @@ lcdDisplay = lcdDisplay()
 #create instance of the Sony Bravia TV
 tv = braviaTV(ip,psk,mac)
 #create instance of the LED
-light = LedControl()
+light = LedControl(apiKey,cityID)
 
 lcdDisplay.message('Place card to\npower on/off')
 
