@@ -10,13 +10,27 @@ import mysql.connector
 #LCD panel library for 16x2 display
 import Adafruit_CharLCD as LCD
 
+#Load config
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+with open(os.path.join(__location__,"settings.json")) as settings:
+    data = json.load(settings)
+
+for settings in data["mySQLSettings"]:
+    host  = settings.get("host")
+    user = settings.get("user")
+    password = settings.get("passwd")
+    db = settings.get("database")
+
+mySQLcfg = {
+    'host':host,
+    'user':user,
+    'passwd':password,
+    'database':db
+}
+
+db = mysql.connector.connect(**mySQLcfg)
 #make connection to database
-db = mysql.connector.connect(
-    host="localhost",
-    user="piscaj",
-    passwd="scoobydoo",
-    database="nfcUsers"
-)
+
 #create object to execute operations on the database
 cursor = db.cursor()
 
