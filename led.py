@@ -18,6 +18,7 @@ class LedControl:
     def __init__(self):  
         self._running  = True 
         self._temp = 0
+        self._condition = "Clear"
         
     #This is used to kill processes
     def stop(self):
@@ -105,8 +106,11 @@ class LedControl:
      }
         try:
             r = requests.get(url=self.url, params=payload)
-            self._temp = r.json().get('main').get('temp')
-            print('Temperture = ' + str(self._temp) + ' C')
+            data = r.json()
+            self._temp = data.get('main').get('temp')
+            for result in data.get('weather'):
+                self. _condition = result.get("main")
+            print('Temperture = ' + str(self._temp) + ' C' + " Conditions = " + self._condition)
 
         except requests.exceptions.ConnectionError:
             print('Connection Error')
