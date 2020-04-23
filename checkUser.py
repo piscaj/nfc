@@ -94,7 +94,7 @@ def checkThisUser(id):
 def readerStart():
   weather = Thread(target = light.showWeather)
   weather.start()
-  light.pulse(33,44,56)
+  #light.pulse(33,44,56)
   
   try:
     while True:

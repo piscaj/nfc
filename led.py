@@ -113,25 +113,59 @@ class LedControl:
 
     def show_graph(self,v, r, g, b):
         v *= blinkt.NUM_PIXELS
+        pixCount = 0
         for x in range(blinkt.NUM_PIXELS):
             if v < 0:
                 r, g, b = 0, 0, 0
             else:
                 r, g, b = [int(min(v, 1.0) * c) for c in [r, g, b]]
+                _r, _g, _b = r, g, b
+                pixCount = pixCount +1
             blinkt.set_pixel(x, r, g, b)
             v -= 1
-        blinkt.show()
+        _x = pixCount
+        __r, __g, __b = _r, _g, _b
+        for i in range(15):
+            _r,_g,_b = self.darken_color(_r,_g,_b)
+            time.sleep(.01)
+            for i in range(_x):
+                blinkt.set_pixel(i, _r, _g, _b)
+            blinkt.show()
+        for i in range(100):
+            _r,_g,_b = self.lighten_color(_r,_g,_b)
+            if (_r >= __r) and (_g >= __g) and (_b >= __b):
+                for i in range(_x):
+                    blinkt.set_pixel(i, _r, _g, _b)
+                blinkt.show()
+                print("Color temp updated!!!")
+                break
+            else:
+                time.sleep(.01)
+                for i in range(_x):
+                    blinkt.set_pixel(i, _r, _g, _b)
+                blinkt.show()
+        
+    def adjust_color_lightness(self,r, g, b, factor):
+        h, l, s = colorsys.rgb_to_hls(r / 255.0, g / 255.0, b / 255.0)
+        l = max(min(l * factor, 1.0), 0.0)
+        r, g, b = colorsys.hls_to_rgb(h, l, s)
+        return int(r * 255), int(g * 255), int(b * 255)
+    
+    def lighten_color(self,r, g, b, factor=0.1):
+        return self.adjust_color_lightness(r, g, b, 1 + factor)
+    
+    def darken_color(self,r, g, b, factor=0.1):
+        return self.adjust_color_lightness(r, g, b, 1 - factor)
 
     def pulse(self,r,g,b):
-        while self._running:
-            pixels = random.sample(range(blinkt.NUM_PIXELS), random.randint(1, 5))
-            for i in range(blinkt.NUM_PIXELS):
-                if i in pixels:
-                    blinkt.set_pixel(i, r, g, b)
-                else:
-                    blinkt.set_pixel(i, 0, 0, 0)
-            blinkt.show()
-            time.sleep(.5)
+        
+        for i in range(4):
+            r,g,b = self.lighten_color(r,g,b)
+            time.sleep(1)
+        for i in range(4):
+            self.darken_color(r,g,b)
+            time.sleep(1)
+
 
     def draw_thermo(self,temp):
         v = temp
@@ -220,7 +254,7 @@ class LedControl:
             r = 58
             g = 124
             b = 255                     
-        if -2.7 <= temp <= 0.5:
+        if 2.7 <= temp <= 0.5:
             r = 58
             g = 65
             b = 255            
