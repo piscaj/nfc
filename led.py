@@ -81,7 +81,10 @@ class LedControl:
         self._apiKey = apiKey
         self._cityID = cityID
         self._weatherAlert = False
-        #self.a = weatherAlert()
+        self.R = 0
+        self.G = 0
+        self.B = 0
+        self.X = 0
     
     #Weather data location
     url = 'http://api.openweathermap.org/data/2.5/weather'
@@ -196,8 +199,11 @@ class LedControl:
         _x = pixCount
         __r, __g, __b = _r, _g, _b
         if self._weatherAlert:
-            weatherAlert = Thread(target = a.alert, args = (_x,_r,_g,_b))
-            weatherAlert.start()
+            self.X = _x
+            self.R = __r
+            self.G = __g
+            self.B = __b
+            return True
         else:
             for i in range(15):
                 _r,_g,_b = self.darken_color(_r,_g,_b)
@@ -366,7 +372,8 @@ class LedControl:
                
         v /= 40
         v += (1 / 8)
-        self.show_graph(v, r, g, b)
+        alert = self.show_graph(v, r, g, b)
+        return alert
 
     def showWeather(self): 
         blinkt.set_all(0, 0, 0)
@@ -374,14 +381,22 @@ class LedControl:
         self._running = True
         while self._running:
             self.update_weather()
-            self.draw_thermo(self._temp)
+            alert = self.draw_thermo(self._temp)
+            if alert:
+                print("We have a weather Alert")
+                weatherAlert = Thread(target = a.alert, args = (self.X,self.R,self.G,self.B))
+                weatherAlert.start()
+            else:
+                weatherAlertStop = Thread(target = a.stop)
+                weatherAlertStop.start()
             time.sleep(120)
-            weatherAlertStop = Thread(target = a.stop)
-            weatherAlertStop.start()
-            time.sleep(5)
+            if alert:
+                weatherAlertStop = Thread(target = a.stop)
+                weatherAlertStop.start()
+                weatherAlert.join()
         weatherAlertStop = Thread(target = a.stop)
         weatherAlertStop.start()
-        time.sleep(5)
+        weatherAlert.join()
         print("Weather LED thread ended...")
         blinkt.set_all(0, 0, 0)
         blinkt.show()
