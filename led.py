@@ -6,7 +6,72 @@ import blinkt
 import requests
 import random
 import json
+from threading import Thread
 
+
+class weatherAlert:
+    
+    def __init__(self):  
+        self._running  = True 
+    
+    def stop(self):
+        self._running = False
+        print("Trying to terminate Alert!") 
+    
+    def alert(self,x,r,g,b):
+        self._running  = True 
+        while self._running:
+            _x = x
+            __r, __g, __b = r, g, b
+            _r, _g, _b = __r, __g, __b
+            for i in range(20):
+              if self._running:
+                _r,_g,_b = self.darken_color(_r,_g,_b)
+                time.sleep(.01)
+                for i in range(_x):
+                    blinkt.set_pixel(i, _r, _g, _b)
+                blinkt.show()
+              else:
+                print("Weather Alert thread ended...") 
+                break
+            for i in range(60):
+              if self._running:
+                _r,_g,_b = self.lighten_color(_r,_g,_b)
+                if _r >= __r: r = __r
+                else: r = _r
+                if _g >= __g: g = __g
+                else: g = _g
+                if _b >= __b: b = __b
+                else: b = _b
+                if (r == __r) and (g == __g) and (b == __b):
+                    for i in range(_x):
+                        blinkt.set_pixel(i, r, g, b)
+                    blinkt.show()
+                    print("Color temp updated!!!")
+                    break
+                else:
+                    time.sleep(.01)
+                    for i in range(_x):
+                        blinkt.set_pixel(i, r, g, b)
+                    blinkt.show()
+              else: 
+                print("Weather Alert thread ended...") 
+                break
+            time.sleep(5)
+        print("Weather Alert thread ended...")
+    
+    def adjust_color_lightness(self,r, g, b, factor):
+        h, l, s = colorsys.rgb_to_hls(r / 255.0, g / 255.0, b / 255.0)
+        l = max(min(l * factor, 1.0), 0.0)
+        r, g, b = colorsys.hls_to_rgb(h, l, s)
+        return int(r * 255), int(g * 255), int(b * 255)
+    
+    def lighten_color(self,r, g, b, factor=0.1):
+        return self.adjust_color_lightness(r, g, b, 1 + factor)
+    
+    def darken_color(self,r, g, b, factor=0.1):
+        return self.adjust_color_lightness(r, g, b, 1 - factor)
+       
 class LedControl:
     
     def __init__(self,apiKey,cityID):  
@@ -15,6 +80,8 @@ class LedControl:
         self._condition = "Clear"
         self._apiKey = apiKey
         self._cityID = cityID
+        self._weatherAlert = False
+        #self.a = weatherAlert()
     
     #Weather data location
     url = 'http://api.openweathermap.org/data/2.5/weather'
@@ -96,7 +163,6 @@ class LedControl:
         blinkt.set_all(0, 0, 0)
         blinkt.show()
         
-
     def update_weather(self):
         payload = {
             'id': self._cityID,
@@ -117,36 +183,47 @@ class LedControl:
     def show_graph(self,v, r, g, b):
         v *= blinkt.NUM_PIXELS
         pixCount = 0
+        print("Weather alert: ",self._weatherAlert)
         for x in range(blinkt.NUM_PIXELS):
             if v < 0:
                 r, g, b = 0, 0, 0
             else:
-                r, g, b = [int(min(v, 1.0) * c) for c in [r, g, b]]
                 _r, _g, _b = r, g, b
+                r, g, b = [int(min(v, 1.0) * c) for c in [r, g, b]]
                 pixCount = pixCount +1
             blinkt.set_pixel(x, r, g, b)
             v -= 1
         _x = pixCount
         __r, __g, __b = _r, _g, _b
-        for i in range(15):
-            _r,_g,_b = self.darken_color(_r,_g,_b)
-            time.sleep(.01)
-            for i in range(_x):
-                blinkt.set_pixel(i, _r, _g, _b)
-            blinkt.show()
-        for i in range(100):
-            _r,_g,_b = self.lighten_color(_r,_g,_b)
-            if (_r >= __r) and (_g >= __g) and (_b >= __b):
-                for i in range(_x):
-                    blinkt.set_pixel(i, _r, _g, _b)
-                blinkt.show()
-                print("Color temp updated!!!")
-                break
-            else:
+        if self._weatherAlert:
+            weatherAlert = Thread(target = a.alert, args = (_x,_r,_g,_b))
+            weatherAlert.start()
+        else:
+            for i in range(15):
+                _r,_g,_b = self.darken_color(_r,_g,_b)
                 time.sleep(.01)
                 for i in range(_x):
                     blinkt.set_pixel(i, _r, _g, _b)
                 blinkt.show()
+            for i in range(60):
+                _r,_g,_b = self.lighten_color(_r,_g,_b)
+                if _r >= __r: r = __r
+                else: r = _r
+                if _g >= __g: g = __g
+                else: g = _g
+                if _b >= __b: b = __b
+                else: b = _b
+                if (r == __r) and (g == __g) and (b == __b):
+                    for i in range(_x):
+                        blinkt.set_pixel(i, r, g, b)
+                    blinkt.show()
+                    print("Color temp updated!!!")
+                    break
+                else:
+                    time.sleep(.01)
+                    for i in range(_x):
+                        blinkt.set_pixel(i, r, g, b)
+                    blinkt.show()
         
     def adjust_color_lightness(self,r, g, b, factor):
         h, l, s = colorsys.rgb_to_hls(r / 255.0, g / 255.0, b / 255.0)
@@ -169,124 +246,129 @@ class LedControl:
             self.darken_color(r,g,b)
             time.sleep(1)
 
-
     def draw_thermo(self,temp):
+        listBadConditions = ["Drizzle","Rain","Snow","Mist",
+                             "Smoke","Haze","Dust","Fog","Sand",
+                             "Ash","Squall","Tornado"]
         v = temp
         temp = float(temp)
-        if 35.6 <= temp <= 37.7:
+        if 35.51 <= temp <= 37.80:
             r = 255 
             g = 0
             b = 0
-        if 33.9 <= temp <= 35.5:
+        if 33.81 <= temp <= 35.50:
             r = 255 
             g = 131
             b = 58
-        if 32.2 <= temp <= 33.80:
+        if 32.11 <= temp <= 33.80:
             r = 255 
             g = 164
             b = 58
-        if 31.1 <= temp <= 32.10:
+        if 31.01 <= temp <= 32.10:
             r = 255 
             g = 184
             b = 58
-        if 29.4 <= temp <= 31:
+        if 29.31 <= temp <= 31.00:
             r = 222 
             g = 210
             b = 58    
-        if 27.7 <= temp <= 29.3:
+        if 27.61 <= temp <= 29.30:
             r = 255 
             g = 236
             b = 58            
-        if 26.1 <= temp <= 27.6:
+        if 26.01 <= temp <= 27.60:
             r = 255 
             g = 249
             b = 58            
-        if 24.4 <= temp <= 26:
+        if 24.31 <= temp <= 26.00:
             r = 249 
             g = 255
             b = 58     
-        if 22.7 <= temp <= 24.3:
+        if 22.61 <= temp <= 24.30:
             r = 236
             g = 255
             b = 58
-        if 21.1 <= temp <= 22.6:
+        if 21.01 <= temp <= 22.60:
             r = 210
             g = 255
             b = 58    
-        if 18.8 <= temp <= 21:
+        if 18.71 <= temp <= 21.00:
             r = 177
             g = 255
             b = 58    
-        if 17.2 <= temp <= 18.7:
+        if 17.11 <= temp <= 18.70:
             r = 111
             g = 255
             b = 58     
-        if 15.5 <= temp <= 17.1:
+        if 15.41 <= temp <= 17.10:
             r = 58
             g = 255
             b = 98
-        if 13.8 <= temp <= 15.4:
+        if 13.71 <= temp <= 15.40:
             r = 58
             g = 255
             b = 190
-        if 12.2 <= temp <= 13.7:
+        if 12.11 <= temp <= 13.70:
             r = 58
             g = 255
             b = 210
-        if 11.1 <= temp <= 12.1:
+        if 11.01 <= temp <= 12.10:
             r = 58
             g = 255
             b = 236
-        if 9.4 <= temp <= 11:
+        if 9.31 <= temp <= 11.00:
             r = 58
             g = 255
             b = 255
-        if 7.7 <= temp <= 9.3:
+        if 7.61 <= temp <= 9.30:
             r = 58
             g = 236
             b = 255
-        if 4.4 <= temp <= 7.6:
+        if 4.31 <= temp <= 7.60:
             r = 58
             g = 210
             b = 255
-        if 3.3 <= temp <= 4.3:
+        if 3.21 <= temp <= 4.30:
             r = 58
             g = 177
             b = 255
-        if 0.5 <= temp <= 3.2:
+        if 0.51 <= temp <= 3.20:
             r = 58
             g = 124
             b = 255                     
-        if -2.7 <= temp <= 0.5:
+        if -2.61 <= temp <= 0.50:
             r = 58
             g = 65
             b = 255            
-        if -6.6 <= temp <= -2.6:
+        if -6.51 <= temp <= -2.60:
             r = 104
             g = 58
             b = 255      
-        if -7.7 <= temp <= -6.5:
+        if -7.61 <= temp <= -6.50:
             r = 157
             g = 58
             b = 255
-        if -12.2 <= temp <= -7.6:
+        if -12.11 <= temp <= -7.60:
             r = 216
             g = 58
             b = 255
-        if -15 <= temp <= -12.1:
+        if -15.00 <= temp <= -12.10:
             r = 255
             g = 58
             b = 249
-        if temp < -14:
+        if temp < -14.99:
             r = 255
             g = 58
             b = 210
+            
+        if self._condition in listBadConditions:
+            self._weatherAlert = True
                
         v /= 40
         v += (1 / 8)
         self.show_graph(v, r, g, b)
 
-    def showWeather(self):
+    def showWeather(self): 
         blinkt.set_all(0, 0, 0)
         blinkt.show()
         self._running = True
@@ -294,6 +376,12 @@ class LedControl:
             self.update_weather()
             self.draw_thermo(self._temp)
             time.sleep(120)
+            weatherAlertStop = Thread(target = a.stop)
+            weatherAlertStop.start()
+            time.sleep(5)
+        weatherAlertStop = Thread(target = a.stop)
+        weatherAlertStop.start()
+        time.sleep(5)
         print("Weather LED thread ended...")
         blinkt.set_all(0, 0, 0)
         blinkt.show()
@@ -333,3 +421,4 @@ class LedControl:
         blinkt.set_all(0, 0, 0)
         blinkt.show()
 
+a = weatherAlert()
