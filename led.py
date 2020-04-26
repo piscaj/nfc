@@ -43,7 +43,7 @@ class weatherAlert:
                 else: g = _g
                 if _b >= __b: b = __b
                 else: b = _b
-                if (r == __r) and (g == __g) and (b == __b):
+                if (r == __r) and (g == __g) and (b == __b) and (self._running):
                     for i in range(_x):
                         blinkt.set_pixel(i, r, g, b)
                     blinkt.show()
@@ -206,30 +206,32 @@ class LedControl:
             return True
         else:
             for i in range(15):
-                _r,_g,_b = self.darken_color(_r,_g,_b)
-                time.sleep(.01)
-                for i in range(_x):
-                    blinkt.set_pixel(i, _r, _g, _b)
-                blinkt.show()
-            for i in range(60):
-                _r,_g,_b = self.lighten_color(_r,_g,_b)
-                if _r >= __r: r = __r
-                else: r = _r
-                if _g >= __g: g = __g
-                else: g = _g
-                if _b >= __b: b = __b
-                else: b = _b
-                if (r == __r) and (g == __g) and (b == __b):
-                    for i in range(_x):
-                        blinkt.set_pixel(i, r, g, b)
-                    blinkt.show()
-                    print("Color temp updated!!!")
-                    break
-                else:
+                 if self._running:
+                    _r,_g,_b = self.darken_color(_r,_g,_b)
                     time.sleep(.01)
                     for i in range(_x):
-                        blinkt.set_pixel(i, r, g, b)
+                        blinkt.set_pixel(i, _r, _g, _b)
                     blinkt.show()
+            for i in range(60):
+                 if self._running:
+                    _r,_g,_b = self.lighten_color(_r,_g,_b)
+                    if _r >= __r: r = __r
+                    else: r = _r
+                    if _g >= __g: g = __g
+                    else: g = _g
+                    if _b >= __b: b = __b
+                    else: b = _b
+                    if (r == __r) and (g == __g) and (b == __b):
+                        for i in range(_x):
+                            blinkt.set_pixel(i, r, g, b)
+                        blinkt.show()
+                        print("Color temp updated!!!")
+                        break
+                    else:
+                        time.sleep(.01)
+                        for i in range(_x):
+                            blinkt.set_pixel(i, r, g, b)
+                        blinkt.show()
         
     def adjust_color_lightness(self,r, g, b, factor):
         h, l, s = colorsys.rgb_to_hls(r / 255.0, g / 255.0, b / 255.0)
@@ -389,14 +391,19 @@ class LedControl:
             else:
                 weatherAlertStop = Thread(target = a.stop)
                 weatherAlertStop.start()
-            time.sleep(120)
+                weatherAlertStop.join()
+            for i in range(120):
+                if self._running:
+                    time.sleep(1)
             if alert:
                 weatherAlertStop = Thread(target = a.stop)
                 weatherAlertStop.start()
                 weatherAlert.join()
+                weatherAlertStop.join()
         weatherAlertStop = Thread(target = a.stop)
         weatherAlertStop.start()
         weatherAlert.join()
+        weatherAlertStop.join()
         print("Weather LED thread ended...")
         blinkt.set_all(0, 0, 0)
         blinkt.show()
