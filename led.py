@@ -177,8 +177,8 @@ class LedControl:
             data = r.json()
             self._temp = data.get('main').get('temp')
             for result in data.get('weather'):
-                self. _condition = result.get("main")
-            print('Temperture = ' + str(self._temp) + ' C' + " Conditions = " + self._condition)
+                self. _condition = result.get("id")
+            print('Temperture = ' + str(self._temp) + ' C' + " Conditions = " + str(self._condition))
 
         except requests.exceptions.ConnectionError:
             print('Connection Error')
@@ -255,9 +255,16 @@ class LedControl:
             time.sleep(1)
 
     def draw_thermo(self,temp):
-        listBadConditions = ["Drizzle","Rain","Snow","Mist",
-                             "Smoke","Haze","Dust","Fog","Sand",
-                             "Ash","Squall","Tornado"]
+        listOkConditions  =      [800,801,802,803,804]
+        listBadConditions =      [200,201,210,211,230,231,
+                                  300,301,310,311,313,321,
+                                  500,501,520,521,600,601,
+                                  611,612,613,615,620,612,
+                                  701,721]
+        listExtremeConditions =  [202,212,221,232,302,312,
+                                  314,502,503,504,511,522,
+                                  531,602,616,622,711,741,
+                                  751,731,762,771,781]
         v = temp
         temp = float(temp)
         if 35.51 <= temp <= 37.80:
@@ -368,10 +375,12 @@ class LedControl:
             r = 255
             g = 58
             b = 210
-            
+        if self._condition in listOkConditions:
+            self._weatherAlert = False    
         if self._condition in listBadConditions:
             self._weatherAlert = True
-               
+        if self._condition in listExtremeConditions:
+            self._weatherAlert = True   
         v /= 40
         v += (1 / 8)
         alert = self.show_graph(v, r, g, b)
