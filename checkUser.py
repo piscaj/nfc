@@ -51,9 +51,6 @@ light = LedControl(apiKey,cityID)
 lcdDisplay.message('Place card to\npower on/off')
 
 def checkThisUser(id):
-  stopWeather = Thread(target = light.stop)
-  stopWeather.start()
-  stopWeather.join()
   try:
     db = mysql.connector.connect(**mySQLcfg)
     
@@ -84,29 +81,32 @@ def checkThisUser(id):
       lcdDisplay.message("Not authorized.")
       cursor.close()
       db.close()
-      
-  time.sleep(0.5)
   stopRunway = Thread(target = light.stop)
   stopRunway.start()
   runway.join()
   stopRunway.join()  
   lcdDisplay.clear()
   lcdDisplay.message('Place Card to\npower on/off')
-  weather = Thread(target = light.showWeather)
-  weather.start()
 
 def readerStart():
   weather = Thread(target = light.showWeather)
   weather.start()
-  #light.pulse(33,44,56)
-  
   try:
     while True:
-   
       id, text = reader.read()
       if id > 0:
+        stopWeather = Thread(target = light.stop)
+        stopWeather.start()
+        weather.join()
+        stopWeather.join()
+        print("Weather thread stopped.")
         checkThisUser(id)
         print(id)
+        time.sleep(2)
+        print("Start Weather thread again.")
+        weather = Thread(target = light.showWeather)
+        weather.start()
+        
       
   finally:
     GPIO.cleanup()
