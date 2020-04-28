@@ -398,9 +398,7 @@ class LedControl:
                 weatherAlert = Thread(target = a.alert, args = (self.X,self.R,self.G,self.B))
                 weatherAlert.start()
             else:
-                weatherAlertStop = Thread(target = a.stop)
-                weatherAlertStop.start()
-                weatherAlertStop.join()
+                print("No weather Alerts")
             for i in range(120):
                 if self._running:
                     time.sleep(1)

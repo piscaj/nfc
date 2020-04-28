@@ -103,11 +103,9 @@ def readerStart():
         checkThisUser(id)
         print(id)
         time.sleep(2)
-        print("Start Weather thread again.")
+        print("Starting Weather thread again.")
         weather = Thread(target = light.showWeather)
         weather.start()
-        
-      
   finally:
     GPIO.cleanup()
 
