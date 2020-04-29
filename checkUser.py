@@ -50,6 +50,10 @@ light = LedControl(apiKey,cityID)
 
 lcdDisplay.message('Place card to\npower on/off')
 
+#Set buzzer - pin 21 as output
+buzzer=21
+GPIO.setup(buzzer,GPIO.OUT)
+
 def checkThisUser(id):
   try:
     db = mysql.connector.connect(**mySQLcfg)
@@ -95,6 +99,9 @@ def readerStart():
     while True:
       id, text = reader.read()
       if id > 0:
+        GPIO.output(buzzer,GPIO.HIGH)
+        time.sleep(.2)
+        GPIO.output(buzzer,GPIO.LOW)
         stopWeather = Thread(target = light.stop)
         stopWeather.start()
         weather.join()
