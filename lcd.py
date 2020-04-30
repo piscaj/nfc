@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import Adafruit_CharLCD as piLCD
 import time 
 

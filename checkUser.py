@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import time
 import json
@@ -11,6 +11,7 @@ from braviaTV import braviaTV
 from lcd import lcdDisplay
 from threading import Thread
 from led import LedControl
+from buzzer import buzzerControl
 
 #Load config
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -47,6 +48,8 @@ lcdDisplay = lcdDisplay()
 tv = braviaTV(ip,psk,mac)
 #create instance of the LED
 light = LedControl(apiKey,cityID)
+#create instance of the LED
+makeSound = buzzerControl(21)
 
 lcdDisplay.message('Place card to\npower on/off')
 
@@ -85,12 +88,14 @@ def checkThisUser(id):
       lcdDisplay.message("Not authorized.")
       cursor.close()
       db.close()
+      makeSound.beep(5)
   stopRunway = Thread(target = light.stop)
   stopRunway.start()
   runway.join()
   stopRunway.join()  
   lcdDisplay.clear()
   lcdDisplay.message('Place Card to\npower on/off')
+  makeSound.beep(1)
 
 def readerStart():
   weather = Thread(target = light.showWeather)
@@ -99,9 +104,7 @@ def readerStart():
     while True:
       id, text = reader.read()
       if id > 0:
-        GPIO.output(buzzer,GPIO.HIGH)
-        time.sleep(.2)
-        GPIO.output(buzzer,GPIO.LOW)
+        makeSound.beep(2)
         stopWeather = Thread(target = light.stop)
         stopWeather.start()
         weather.join()
