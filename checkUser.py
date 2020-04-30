@@ -53,10 +53,6 @@ makeSound = buzzerControl(21)
 
 lcdDisplay.message('Place card to\npower on/off')
 
-#Set buzzer - pin 21 as output
-buzzer=21
-GPIO.setup(buzzer,GPIO.OUT)
-
 def checkThisUser(id):
   try:
     db = mysql.connector.connect(**mySQLcfg)
