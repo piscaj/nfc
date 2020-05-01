@@ -18,46 +18,85 @@ class weatherAlert:
         self._running = False
         print("Trying to terminate Alert!") 
     
-    def alert(self,x,r,g,b):
+    def alert(self,x,r,g,b,level):
         self._running  = True 
         while self._running:
             _x = x
             __r, __g, __b = r, g, b
             _r, _g, _b = __r, __g, __b
-            for i in range(20):
-              if self._running:
-                _r,_g,_b = self.darken_color(_r,_g,_b)
-                time.sleep(.01)
-                for i in range(_x):
-                    blinkt.set_pixel(i, _r, _g, _b)
-                blinkt.show()
-              else:
-                print("Weather Alert thread ended...") 
-                break
-            for i in range(60):
-              if self._running:
-                _r,_g,_b = self.lighten_color(_r,_g,_b)
-                if _r >= __r: r = __r
-                else: r = _r
-                if _g >= __g: g = __g
-                else: g = _g
-                if _b >= __b: b = __b
-                else: b = _b
-                if (r == __r) and (g == __g) and (b == __b) and (self._running):
-                    for i in range(_x):
-                        blinkt.set_pixel(i, r, g, b)
-                    blinkt.show()
-                    print("Color temp updated!!!")
-                    break
-                else:
-                    time.sleep(.01)
-                    for i in range(_x):
-                        blinkt.set_pixel(i, r, g, b)
-                    blinkt.show()
-              else: 
-                print("Weather Alert thread ended...") 
-                break
-            time.sleep(5)
+            
+            if level == 1:
+             for i in range(20):
+               if self._running:
+                 _r,_g,_b = self.darken_color(_r,_g,_b)
+                 time.sleep(.01)
+                 for i in range(_x):
+                     blinkt.set_pixel(i, _r, _g, _b)
+                 blinkt.show()
+               else:
+                 print("Weather Alert thread ended...") 
+                 break
+             for i in range(60):
+               if self._running:
+                 _r,_g,_b = self.lighten_color(_r,_g,_b)
+                 if _r >= __r: r = __r
+                 else: r = _r
+                 if _g >= __g: g = __g
+                 else: g = _g
+                 if _b >= __b: b = __b
+                 else: b = _b
+                 if (r == __r) and (g == __g) and (b == __b) and (self._running):
+                     for i in range(_x):
+                         blinkt.set_pixel(i, r, g, b)
+                     blinkt.show()
+                     print("Color temp updated!!!")
+                     break
+                 else:
+                     time.sleep(.01)
+                     for i in range(_x):
+                         blinkt.set_pixel(i, r, g, b)
+                     blinkt.show()
+               else: 
+                 print("Weather Alert thread ended...") 
+                 break
+             time.sleep(5)
+            
+            if level == 2:
+             for i in range(15):
+               if self._running:
+                 _r,_g,_b = self.darken_color(_r,_g,_b)
+                 #time.sleep(.01)
+                 for i in range(_x):
+                     blinkt.set_pixel(i, _r, _g, _b)
+                 blinkt.show()
+               else:
+                 print("Weather Alert thread ended...") 
+                 break
+             for i in range(60):
+               if self._running:
+                 _r,_g,_b = self.lighten_color(_r,_g,_b)
+                 if _r >= __r: r = __r
+                 else: r = _r
+                 if _g >= __g: g = __g
+                 else: g = _g
+                 if _b >= __b: b = __b
+                 else: b = _b
+                 if (r == __r) and (g == __g) and (b == __b) and (self._running):
+                     for i in range(_x):
+                         blinkt.set_pixel(i, r, g, b)
+                     blinkt.show()
+                     print("Color temp updated!!!")
+                     break
+                 else:
+                     #time.sleep(.01)
+                     for i in range(_x):
+                         blinkt.set_pixel(i, r, g, b)
+                     blinkt.show()
+               else: 
+                 print("Weather Alert thread ended...") 
+                 break
+             time.sleep(.5)
+             
         print("Weather Alert thread ended...")
     
     def adjust_color_lightness(self,r, g, b, factor):
@@ -203,7 +242,7 @@ class LedControl:
             self.R = __r
             self.G = __g
             self.B = __b
-            return True
+            return self._weatherAlert
         else:
             for i in range(15):
                  if self._running:
@@ -376,11 +415,11 @@ class LedControl:
             g = 58
             b = 210
         if self._condition in listOkConditions:
-            self._weatherAlert = False    
+            self._weatherAlert = 0    
         if self._condition in listBadConditions:
-            self._weatherAlert = True
+            self._weatherAlert = 1
         if self._condition in listExtremeConditions:
-            self._weatherAlert = True   
+            self._weatherAlert = 2   
         v /= 40
         v += (1 / 8)
         alert = self.show_graph(v, r, g, b)
@@ -394,11 +433,11 @@ class LedControl:
             self.update_weather()
             alert = self.draw_thermo(self._temp)
             if alert:
-                print("We have a weather Alert")
-                weatherAlert = Thread(target = a.alert, args = (self.X,self.R,self.G,self.B))
+                print("We have a weather alert. Threat level = ",alert)
+                weatherAlert = Thread(target = a.alert, args = (self.X,self.R,self.G,self.B,alert))
                 weatherAlert.start()
             else:
-                print("No weather Alerts")
+                print("No weather alert. Threat level = ",alert)
             for i in range(120):
                 if self._running:
                     time.sleep(1)
